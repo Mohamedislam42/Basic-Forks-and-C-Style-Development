@@ -1,0 +1,92 @@
+
+# Compiler
+CC = gcc
+
+# Compiler flags
+CFLAGS = -Wall -Wextra -g
+
+# Targets
+TARGETS = process_creation output_program simple_program
+
+# Default target: build all programs
+all: $(TARGETS)
+	@echo "All programs compiled successfully!"
+
+# Exercise 1: Process creation with fork()
+process_creation: process_creation.c
+	$(CC) $(CFLAGS) process_creation.c -o process_creation
+	@echo "process_creation compiled"
+
+# Exercise 5: Separate compilation and linking
+output_program: file1.o file2.o
+	$(CC) $(CFLAGS) file1.o file2.o -o output_program
+	@echo "output_program linked"
+
+# Compile file1.c to object file
+file1.o: file1.c
+	$(CC) $(CFLAGS) -c file1.c
+	@echo "file1.o compiled"
+
+# Compile file2.c to object file
+file2.o: file2.c
+	$(CC) $(CFLAGS) -c file2.c
+	@echo "file2.o compiled"
+
+# Exercise 6: Simple program for dynamic linking demo
+simple_program: simple_program.c
+	$(CC) $(CFLAGS) simple_program.c -o simple_program
+	@echo "simple_program compiled"
+
+# Run targets
+run_process_creation: process_creation
+	@echo "\n Running process_creation:"
+	@echo "================================"
+	./process_creation
+	@echo "================================\n"
+
+run_output_program: output_program
+	@echo "\n Running output_program:"
+	@echo "================================"
+	./output_program
+	@echo "================================\n"
+
+run_simple_program: simple_program
+	@echo "\n Running simple_program:"
+	@echo "================================"
+	./simple_program
+	@echo "================================\n"
+
+# Run all programs
+run_all: run_process_creation run_output_program run_simple_program
+	@echo " All programs executed successfully!"
+
+# Inspect dynamic libraries
+inspect_libraries: simple_program
+	@echo "\n Dynamic libraries used by simple_program:"
+	@echo "=============================================="
+	ldd simple_program
+	@echo "==============================================\n"
+
+# Clean up compiled files
+clean:
+	rm -f $(TARGETS) *.o
+	@echo " Cleaned all compiled files and object files"
+
+# Help target
+help:
+	@echo "Available targets:"
+	@echo "  make              - Build all programs"
+	@echo "  make all          - Build all programs"
+	@echo "  make process_creation  - Build process creation example"
+	@echo "  make output_program    - Build linked program example"
+	@echo "  make simple_program    - Build simple program"
+	@echo "  make run_process_creation - Run process creation example"
+	@echo "  make run_output_program   - Run linked program"
+	@echo "  make run_simple_program   - Run simple program"
+	@echo "  make run_all             - Run all programs"
+	@echo "  make inspect_libraries   - Show dynamic libraries"
+	@echo "  make clean              - Remove compiled files"
+	@echo "  make help               - Show this help message"
+
+# Phony targets (not actual files)
+.PHONY: all clean run_process_creation run_output_program run_simple_program run_all inspect_libraries help
